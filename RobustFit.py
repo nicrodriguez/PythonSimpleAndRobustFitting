@@ -1,10 +1,4 @@
-import numpy as np
-from sympy import list2numpy
-
-
-def normalize(vector):
-    mag = (vector[0]**2 + vector[1]**2 + vector[2]**2)**(1/2)
-    return [vector[0]/mag, vector[1]/mag, vector[2]/mag]
+from PythonSimpleAndRobustFitting.BackgroundFunctions import *
 
 
 def robust_fit(x_points, y_points, z_points):
@@ -42,7 +36,7 @@ def robust_fit(x_points, y_points, z_points):
     nx = [det_x, xz * yz - xy * zz, xy * yz - xz * yy]
     ny = [xz * yz - xy * zz, det_y, xy * xz - yz * xx]
     nz = [xy * yz - xz * yy, xy * xz - yz * xx, det_z]
-    weighted_det = [nx, ny, nz]
+    # weighted_det = [nx, ny, nz]
 
     dot_prodx = 0*nx[0] + 0*nx[1] + 0*nx[2]
     dot_prody = 0*ny[0] + 0*ny[1] + 0*nz[2]
@@ -67,7 +61,7 @@ def robust_fit(x_points, y_points, z_points):
         weighted_nz += nz[i] * weight_z
 
     weighted_det = [weighted_nx, weighted_ny, weighted_nz]
-    print()
+
     # print(weighted_det)
     normal = normalize(weighted_det)
     # print(normal)
@@ -76,7 +70,7 @@ def robust_fit(x_points, y_points, z_points):
     for i in range(0, len(x_points)):
         calculated_z.append(-(normal[0]*x_points[i] + normal[1]*y_points[i])/normal[2])
 
-    return calculated_z
+    return [calculated_z, normal]
 
 
 
