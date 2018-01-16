@@ -35,22 +35,22 @@ def plane_to_point_rms(z_points_c, z_points_a):
     print("Hello")
 
 
-vals = read_points_from_file('points_on_plane.txt')
+vals = read_points_from_file('PythonSimpleAndRobustFitting/points_on_plane.txt')
 perfect_x_points = vals[0]
 perfect_y_points = vals[1]
 perfect_z_points = vals[2]
 
-vals = read_points_from_file('noisy_points_on_plane.txt')
+vals = read_points_from_file('PythonSimpleAndRobustFitting/noisy_points_on_plane.txt')
 x_points_n1 = vals[0]
 y_points_n1 = vals[1]
 z_points_n1 = vals[2]
 
-vals = read_points_from_file('noisy_points_on_plane2.txt')
+vals = read_points_from_file('PythonSimpleAndRobustFitting/noisy_points_on_plane2.txt')
 x_points_n2 = vals[0]
 y_points_n2 = vals[1]
 z_points_n2 = vals[2]
 
-vals = read_points_from_file('noisy_points_on_plane3.txt')
+vals = read_points_from_file('PythonSimpleAndRobustFitting/noisy_points_on_plane3.txt')
 x_points_n3 = vals[0]
 y_points_n3 = vals[1]
 z_points_n3 = vals[2]
