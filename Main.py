@@ -33,14 +33,35 @@ def rms_error(z_points_c, z_points_a):
     return 100*(abs(mean_error))**(1/2)
 
 
-def plane_to_point_rms(normal_ref, coordinates_c):
+def plane_to_point_rms(normal_ref, coordinates_c, centroid):
     x = coordinates_c[0]
     y = coordinates_c[1]
     z = coordinates_c[2]
-    d = []
+
+    x_c = centroid[0]
+    y_c = centroid[1]
+    z_c = centroid[2]
+
+    # calculating points relative to the normal of the plane
+    # x_new = []
+    # y_new = []
+    z_new = len(x)*[None]
 
     for i in range(0, len(x)):
-        d.append(point_to_plane_distance(normal_ref, x, y, z))
+        D = -(normal_ref[0]*x_c + normal_ref[1]*y_c + normal_ref[2]*z_c)
+        # print(D)
+        d = point_to_plane_distance(normal_ref, x[i], y[i], z[i], D)
+        if d < 0:
+            x_new = x[i] + normal_ref[0]*d
+            y_new = y[i] + normal_ref[1]*d
+
+        else:
+            x_new = x[i] - normal_ref[0]*d
+            y_new = y[i] - normal_ref[1]*d
+
+        z_new[i] = -(normal_ref[0]*x_new + normal_ref[1]*y_new)/normal_ref[2]
+
+    return rms_error(z, z_new)
 
 
 # Reading values from txt files
@@ -65,30 +86,57 @@ y_points_n3 = vals[1]
 z_points_n3 = vals[2]
 
 
-# Obtaining perfect plane normal
-z_points, normal = simple_fit(perfect_x_points, perfect_y_points, perfect_z_points)
+# Obtaining perfect plane normal and corresponding points
+z_points, normal, cent = simple_fit(perfect_x_points, perfect_y_points, perfect_z_points)
+rmsR = rms_error(z_points, perfect_z_points)
 
+c_c = [perfect_x_points, perfect_y_points, perfect_z_points]
+rmsNR = plane_to_point_rms(normal, c_c, cent)
 
 # Simple fitting
-simple_z_n1, normalS1 = simple_fit(x_points_n1, y_points_n1, z_points_n1)
+simple_z_n1, normalS1, centS1 = simple_fit(x_points_n1, y_points_n1, z_points_n1)
+simple_z_n2, normalS2, centS2 = simple_fit(x_points_n2, y_points_n2, z_points_n2)
+simple_z_n3, normalS3, centS3 = simple_fit(x_points_n3, y_points_n3, z_points_n3)
+
 rmsS1 = rms_error(simple_z_n1, perfect_z_points)
-
-simple_z_n2, normalS2 = simple_fit(x_points_n2, y_points_n2, z_points_n2)
 rmsS2 = rms_error(simple_z_n2, perfect_z_points)
-
-simple_z_n3, normalS3 = simple_fit(x_points_n3, y_points_n3, z_points_n3)
 rmsS3 = rms_error(simple_z_n3, perfect_z_points)
 
+c_c1 = [x_points_n1, y_points_n1, simple_z_n1]
+c_c2 = [x_points_n2, y_points_n2, simple_z_n2]
+c_c3 = [x_points_n3, y_points_n3, simple_z_n3]
+
+rmsNS1 = plane_to_point_rms(normal, c_c1, centS1)
+rmsNS2 = plane_to_point_rms(normal, c_c2, centS2)
+rmsNS3 = plane_to_point_rms(normal, c_c3, centS3)
+
 # Robust Fitting
-robust_z_n1, normalR1 = robust_fit(x_points_n1, y_points_n1, z_points_n1)
+robust_z_n1, normalR1, centR1 = robust_fit(x_points_n1, y_points_n1, z_points_n1)
+robust_z_n2, normalR2, centR2 = robust_fit(x_points_n2, y_points_n2, z_points_n2)
+robust_z_n3, normalR3, centR3 = robust_fit(x_points_n3, y_points_n3, z_points_n3)
+
+
 rmsR1 = rms_error(robust_z_n1, perfect_z_points)
-
-robust_z_n2, normalR2 = robust_fit(x_points_n2, y_points_n2, z_points_n2)
 rmsR2 = rms_error(robust_z_n2, perfect_z_points)
-
-robust_z_n3, normalR3 = robust_fit(x_points_n3, y_points_n3, z_points_n3)
 rmsR3 = rms_error(robust_z_n3, perfect_z_points)
 
+c_c1 = [x_points_n1, y_points_n1, robust_z_n1]
+c_c2 = [x_points_n2, y_points_n2, robust_z_n2]
+c_c3 = [x_points_n3, y_points_n3, robust_z_n3]
+
+rmsNR1 = plane_to_point_rms(normal, c_c1, centR1)
+rmsNR2 = plane_to_point_rms(normal, c_c2, centR2)
+rmsNR3 = plane_to_point_rms(normal, c_c3, centR3)
+
+print()
+print()
+print("Perfect Plane RMS (For reference)")
+print("   -----Z-difference RMS-----")
+print("RMS Error no noise: {0:.5}%".format(rmsR))
+print("   ----Point to Plane RMS----")
+print("RMS Error no noise: {0:.5}%".format(rmsNR))
+print()
+print()
 print("------------Simple Fit-------------")
 print("Normal Vector with +/- 1 unit: {0}".format(normalS1))
 print("Normal Vector with +/- 2 units: {0}".format(normalS2))
@@ -98,6 +146,11 @@ print("   -----Z-difference RMS-----")
 print("RMS Error with +/- 1 unit: {0:.5}%".format(rmsS1))
 print("RMS Error with +/- 2 units: {0:.5}%".format(rmsS2))
 print("RMS Error with +/- 3 units: {0:.5}%".format(rmsS3))
+print("   ----Point to Plane RMS----")
+print("RMS Error with +/- 1 unit: {0:.5}%".format(rmsNS1))
+print("RMS Error with +/- 2 unit: {0:.5}%".format(rmsNS2))
+print("RMS Error with +/- 3 unit: {0:.5}%".format(rmsNS3))
+print()
 print()
 print("------------Robust Fit-------------")
 print("Normal Vector with +/- 1 unit: {0}".format(normalR1))
@@ -108,5 +161,10 @@ print("   -----Z-difference RMS-----")
 print("RMS Error with +/- 1 unit: {0:.5}%".format(rmsR1))
 print("RMS Error with +/- 2 units: {0:.5}%".format(rmsR2))
 print("RMS Error with +/- 3 units: {0:.5}%".format(rmsR3))
+print("   ----Point to Plane RMS----")
+print("RMS Error with +/- 1 unit: {0:.5}%".format(rmsNR1))
+print("RMS Error with +/- 2 unit: {0:.5}%".format(rmsNR2))
+print("RMS Error with +/- 3 unit: {0:.5}%".format(rmsNR3))
+
 
 

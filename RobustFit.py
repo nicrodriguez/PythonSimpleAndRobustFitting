@@ -70,7 +70,7 @@ def robust_fit(x_points, y_points, z_points):
     for i in range(0, len(x_points)):
         calculated_z.append(-(normal[0]*x_points[i] + normal[1]*y_points[i])/normal[2])
 
-    return [calculated_z, normal]
+    return [calculated_z, normal, cent]
 
 
 
