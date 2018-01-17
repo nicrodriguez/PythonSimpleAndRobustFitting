@@ -1,4 +1,4 @@
-from PythonSimpleAndRobustFitting.BackgroundFunctions import *
+from BackgroundFunctions import *
 
 
 def simple_fit(x_points, y_points, z_points):
