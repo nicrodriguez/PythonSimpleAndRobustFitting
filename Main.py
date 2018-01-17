@@ -1,6 +1,6 @@
 from RobustFit import robust_fit
 from SimpleFit import simple_fit
-from BackgroundFunctions import point_to_plane_distance
+from BackgroundFunctions import point_to_plane_distance, plot_plane
 
 
 def read_points_from_file(filename):
@@ -114,7 +114,8 @@ rmsNS3 = plane_to_point_rms(normal, c_c3, centS3)
 robust_z_n1, normalR1, centR1 = robust_fit(x_points_n1, y_points_n1, z_points_n1)
 robust_z_n2, normalR2, centR2 = robust_fit(x_points_n2, y_points_n2, z_points_n2)
 robust_z_n3, normalR3, centR3 = robust_fit(x_points_n3, y_points_n3, z_points_n3)
-
+# for i in range(0, len(robust_z_n2)):
+#     print("{0}   {1}".format(z_points[i], robust_z_n3[i]))
 
 rmsR1 = rms_error(robust_z_n1, perfect_z_points)
 rmsR2 = rms_error(robust_z_n2, perfect_z_points)
@@ -127,6 +128,13 @@ c_c3 = [x_points_n3, y_points_n3, robust_z_n3]
 rmsNR1 = plane_to_point_rms(normal, c_c1, centR1)
 rmsNR2 = plane_to_point_rms(normal, c_c2, centR2)
 rmsNR3 = plane_to_point_rms(normal, c_c3, centR3)
+
+# plot_plane(normalR1, [x_points_n1, y_points_n1, robust_z_n1], 0.5, 'Robust Fit +/- 1 units of noise')
+# plot_plane(normalR2, [x_points_n2, y_points_n2, robust_z_n2], 0.5, 'Robust Fit +/- 2 units of noise')
+# plot_plane(normalR3, [x_points_n3, y_points_n3, robust_z_n3], 0.5, 'Robust Fit +/- 3 units of noise')
+# plot_plane(normalS1, [x_points_n1, y_points_n1, simple_z_n1], 0.5, 'Simple Fit +/- 1 units of noise')
+# plot_plane(normalS2, [x_points_n2, y_points_n2, simple_z_n2], 0.5, 'Simple Fit +/- 2 units of noise')
+# plot_plane(normalS3, [x_points_n3, y_points_n3, simple_z_n3], 0.5, 'Simple Fit +/- 3 units of noise')
 
 print()
 print()
