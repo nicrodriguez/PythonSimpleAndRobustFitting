@@ -7,12 +7,7 @@ def simple_fit(x_points, y_points, z_points):
     cent = [sum(x_points) / len(x_points), sum(y_points) / len(y_points), sum(z_points) / len(z_points)]
 
     # Calculating the covariance matrix
-    xx = 0
-    yy = 0
-    xy = 0
-    xz = 0
-    yz = 0
-    zz = 0
+    xx = yy = xy = xz = yz = zz = 0
     for i in range(0, len(x_points)):
         xx += (x_points[i] - cent[0]) * (x_points[i] - cent[0])
         yy += (y_points[i] - cent[1]) * (y_points[i] - cent[1])
@@ -29,16 +24,15 @@ def simple_fit(x_points, y_points, z_points):
     # Determining max determinant
     det_m = max(det_x, det_y, det_z)
 
+    # Picking axis with best conditioning
     if det_m == 0:
         print("Points don't span a plane")
         return [0, 0]
     else:
         if det_m == det_x:
             n = [det_m, xz * yz - xy * zz, xy * yz - xz * yy]
-
         elif det_m == det_y:
             n = [xz * yz - xy * zz, det_m, xy * xz - yz * xx]
-
         else:
             n = [xy * yz - xz * yy, xy * xz - yz * xx, det_m]
 
