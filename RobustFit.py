@@ -9,7 +9,6 @@ def robust_fit(x_points, y_points, z_points):
 
     # Calculating the covariance matrix
     xx = yy = xy = xz = yz = zz = 0.0
-
     for i in range(0, len(x_points)):
         xx += (x_points[i] - cent[0]) * (x_points[i] - cent[0])
         yy += (y_points[i] - cent[1]) * (y_points[i] - cent[1])
